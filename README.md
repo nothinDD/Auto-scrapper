@@ -37,3 +37,9 @@ This tool is **not meant for production use** or to violate the website's terms 
 
 ## 📁 Project Structure
 
+Auto-scrapper/
+├── main.py
+├── scripts/
+│ └── scrapr.py
+├── requirements.txt
+└── README.md
