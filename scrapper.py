@@ -17,6 +17,18 @@ with sync_playwright() as p:
     page = context.new_page()
     page.goto(url)
     html = page.content()
+
     soup=BeautifulSoup(html, 'html.parser')
-    print(soup.prettify())
+    shop_div=soup.find("div", {"class" : "auto-lists lt"})
+
+    car_list_part=shop_div.find_all("a", {"class" : "announcement-item is-enhanced is-gallery"})
+    car_links=[link.get("href") for link in car_list_part]
+    print(car_links)
+    next_page=url+soup.find("a", {"class" : "next"}).get("href")
+    print(next_page)
+    # tag='<div class="auto-lists lt">'
+    # tag=BeautifulSoup(tag).b
+    #
+    # car_links=BeautifulSoup.find_all(tag, recursive=True)
+    # print(car_links)
     browser.close()
