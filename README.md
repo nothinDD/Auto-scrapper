@@ -43,3 +43,5 @@ Auto-scrapper/
 │ └── scrapr.py
 ├── requirements.txt
 └── README.md
+
+##🚨 Work is still in progress 🚨##
