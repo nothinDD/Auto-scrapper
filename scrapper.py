@@ -2,15 +2,20 @@ import requests
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 from typing import Tuple, Dict, List
+
 url="https://autoplius.lt/skelbimai/naudoti-automobiliai"
 
 def get_cars(html:str)->Tuple[List[str],str]:
+
     soup=BeautifulSoup(html, 'html.parser')
+
     shop_div=soup.find("div", {"class" : "auto-lists lt"})
 
     car_list_part=shop_div.find_all("a", {"class" : "announcement-item is-enhanced is-gallery"})
     car_links=[link.get("href") for link in car_list_part]
+
     next_page=url+soup.find("a", {"class" : "next"}).get("href")
+
     return car_links,next_page
 
 if __name__ == "__main__":
