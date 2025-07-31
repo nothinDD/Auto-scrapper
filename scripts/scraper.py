@@ -42,7 +42,7 @@ def get_info(car_html:str):
 
 if __name__ == "__main__":
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
         context = browser.new_context(
             user_agent=user,
             locale="en-US",
@@ -97,4 +97,3 @@ if __name__ == "__main__":
 
     dt=pd.DataFrame(data=car_dict)
     dt.to_csv(file, mode='w')
-    print(dt)
