@@ -10,7 +10,6 @@ def get_cars(html:str)->Tuple[List[str],str]:
     soup=BeautifulSoup(html, 'html.parser')
 
     shop_div=soup.find("div", {"class" : "auto-lists lt"})
-
     car_list_part=shop_div.find_all("a", {"class" : "announcement-item is-enhanced is-gallery"})
     car_links=[link.get("href") for link in car_list_part]
 
@@ -58,7 +57,7 @@ if __name__ == "__main__":
                             for parameter in parameter_values if parameter.string is not None]
 
                 car_object=dict(zip(par,par_values))
-
+                car_object["link"]=car
                 print(car_object)
 
             car_count += len(car_lists)
