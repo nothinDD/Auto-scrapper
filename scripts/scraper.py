@@ -5,7 +5,9 @@ from typing import Tuple, Dict, List
 import pandas as pd
 
 url="https://autoplius.lt/skelbimai/naudoti-automobiliai"
-
+user=("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                       "AppleWebKit/537.36 (KHTML, like Gecko) "
+                       "Chrome/114.0.0.0 Safari/537.36")
 car_dict={"Pirma registracija": [],
           "Rida": [],
           "Variklis": [],
@@ -39,9 +41,7 @@ if __name__ == "__main__":
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         context = browser.new_context(
-            user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-                       "AppleWebKit/537.36 (KHTML, like Gecko) "
-                       "Chrome/114.0.0.0 Safari/537.36",
+            user_agent=user,
             locale="en-US",
             java_script_enabled=True,
             bypass_csp=True,
