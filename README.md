@@ -1,6 +1,6 @@
 # Auto Plius Car Scraper
 
-This project is a **web scraper** built to collect car listings from the [Auto Plius](https://autoplius.lt) website.
+This project is a **web scraper** built to collect car listings from popular Lithuanian car listing websites and compare the prices.
 
 > 🚨 **This scraper is intended for learning purposes only.**
 
