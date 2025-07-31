@@ -9,7 +9,8 @@ user=("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                        "AppleWebKit/537.36 (KHTML, like Gecko) "
                        "Chrome/114.0.0.0 Safari/537.36")
 file = "results.csv"
-car_dict={"Pirma registracija": [],
+car_dict={"Kaina":[],
+          "Pirma registracija": [],
           "Rida": [],
           "Variklis": [],
           "Kuro tipas" : [],
@@ -21,7 +22,8 @@ car_dict={"Pirma registracija": [],
           "Ratlankių skersmuo": [],
           "Nuosava masė, kg": [],
           "Sėdimų vietų skaičius": [],
-          "Pirmosios registracijos šalis": []}
+          "Pirmosios registracijos šalis": [],
+          "Link": []}
 
 def get_cars(html:str)->Tuple[List[str],str]:
 
@@ -40,7 +42,7 @@ def get_info(car_html:str):
 
 if __name__ == "__main__":
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(headless=False)
         context = browser.new_context(
             user_agent=user,
             locale="en-US",
@@ -73,7 +75,7 @@ if __name__ == "__main__":
                         for parameter in parameter_values if parameter.string is not None]
 
             car_object=dict(zip(par,par_values))
-            car_object["link"]=car
+            car_object["Link"]=car
 
             for key in car_dict.keys():
                 notSeen=True
