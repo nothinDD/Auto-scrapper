@@ -2,8 +2,23 @@ import requests
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 from typing import Tuple, Dict, List
+import pandas as pd
 
 url="https://autoplius.lt/skelbimai/naudoti-automobiliai"
+
+car_dict={"Pirma registracija": [],
+          "Rida": [],
+          "Variklis": [],
+          "Kuro tipas" : [],
+          "Kėbulo tipas": [],
+          "Durų skaičius": [],
+          "Varantieji ratai":[],
+          "Klimato valdymas": [],
+          "Spalva": [],
+          "Ratlankių skersmuo": [],
+          "Nuosava masė, kg": [],
+          "Sėdimų vietų skaičius": [],
+          "Pirmosios registracijos šalis": []}
 
 def get_cars(html:str)->Tuple[List[str],str]:
 
@@ -58,8 +73,17 @@ if __name__ == "__main__":
 
                 car_object=dict(zip(par,par_values))
                 car_object["link"]=car
-                print(car_object)
 
+                for key in car_dict.keys():
+                    unique=True
+                    for keyT in car_object.keys():
+                        if key==keyT:
+                            unique=False
+                            car_dict[key].append(car_object[key])
+                    if unique:
+                        car_dict[key].append(None)
+
+            print(car_dict)
             car_count += len(car_lists)
             page.goto(next_page)
 
