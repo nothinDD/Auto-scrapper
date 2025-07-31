@@ -4,10 +4,11 @@ from playwright.sync_api import sync_playwright
 from typing import Tuple, Dict, List
 import pandas as pd
 
-url="https://autoplius.lt/skelbimai/naudoti-automobiliai"
+url="https://autoplius.lt/skelbimai/naudoti-automobiliai/volkswagen/golf?category_id=2&slist=2628362265"
 user=("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                        "AppleWebKit/537.36 (KHTML, like Gecko) "
                        "Chrome/114.0.0.0 Safari/537.36")
+file = "results.csv"
 car_dict={"Pirma registracija": [],
           "Rida": [],
           "Variklis": [],
@@ -53,42 +54,45 @@ if __name__ == "__main__":
         page_count=1
         car_count=0
 
-        while page is not None:
-            page_count+=1
-            car_lists,next_page=get_cars(html)
-            for car in car_lists:
-                page.goto(car)
-
-                html=page.content()
-                soup = BeautifulSoup(html, 'html.parser')
-
-                parameter_block=soup.find("div", {"class": "row announcement-section"})
-
-                parameter_names=parameter_block.find_all("div", {"class": "parameter-label"})
-                parameter_values=parameter_block.find_all("div", {"class": "parameter-value"})
-
-                par=[parameter.string.strip() for parameter in parameter_names if parameter.string.strip()!='Kėbulo numeris (VIN)']
-                par_values=[parameter.string.replace('\n','').strip()
-                            for parameter in parameter_values if parameter.string is not None]
-
-                car_object=dict(zip(par,par_values))
-                car_object["link"]=car
-
-                for key in car_dict.keys():
-                    notSeen=True
-                    for keyT in car_object.keys():
-                        if key==keyT:
-                            notSeen=False
-                            car_dict[key].append(car_object[key])
-                    if notSeen:
-                        car_dict[key].append(None)
-
-            print(car_dict)
-            car_count += len(car_lists)
-            page.goto(next_page)
-
-            print(f"\nGoing to next page: {page_count}\n")
-            print(f"\nCurrent scrapped car count:{car_count}\n")
+        #while page is not None:
+        page_count+=1
+        car_lists,next_page=get_cars(html)
+        for car in car_lists:
+            page.goto(car)
 
             html=page.content()
+            soup = BeautifulSoup(html, 'html.parser')
+
+            parameter_block=soup.find("div", {"class": "row announcement-section"})
+
+            parameter_names=parameter_block.find_all("div", {"class": "parameter-label"})
+            parameter_values=parameter_block.find_all("div", {"class": "parameter-value"})
+
+            par=[parameter.string.strip() for parameter in parameter_names if parameter.string.strip()!='Kėbulo numeris (VIN)']
+            par_values=[parameter.string.replace('\n','').strip()
+                        for parameter in parameter_values if parameter.string is not None]
+
+            car_object=dict(zip(par,par_values))
+            car_object["link"]=car
+
+            for key in car_dict.keys():
+                notSeen=True
+                for keyT in car_object.keys():
+                    if key==keyT:
+                        notSeen=False
+                        car_dict[key].append(car_object[key])
+                if notSeen:
+                    car_dict[key].append(None)
+
+        car_count += len(car_lists)
+        #page.goto(next_page)
+
+        print(f"\nGoing to next page: {page_count}\n")
+        print(f"\nCurrent scrapped car count:{car_count}\n")
+
+        #html=page.content()
         browser.close()
+
+    dt=pd.DataFrame(data=car_dict)
+    dt.to_csv(file, mode='w')
+    print(dt)
