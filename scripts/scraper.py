@@ -75,12 +75,12 @@ if __name__ == "__main__":
                 car_object["link"]=car
 
                 for key in car_dict.keys():
-                    unique=True
+                    notSeen=True
                     for keyT in car_object.keys():
                         if key==keyT:
-                            unique=False
+                            notSeen=False
                             car_dict[key].append(car_object[key])
-                    if unique:
+                    if notSeen:
                         car_dict[key].append(None)
 
             print(car_dict)
