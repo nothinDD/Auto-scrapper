@@ -20,13 +20,6 @@ It was created to practice and demonstrate the following:
   - Mileage
   - Location
 
-## 🚫 Disclaimer
-
-This tool is **not meant for production use** or to violate the website's terms of service.
-
-> Please respect robots.txt and Auto Plius' data policies.
-
----
 
 ## 💡 Tech Stack
 
@@ -44,4 +37,11 @@ Auto-scrapper/
 ├── requirements.txt
 └── README.md
 
-##🚨 Work is still in progress 🚨##
+## 🚫 Disclaimer
+
+This tool is **not meant for production use** or to violate the website's terms of service.
+
+> Please respect robots.txt and Auto Plius' data policies.
+
+---
+##🚨 Work is still in progress 🚨
