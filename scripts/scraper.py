@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 from typing import Tuple, Dict, List
 import pandas as pd
-
+import re
 url="https://autoplius.lt/skelbimai/naudoti-automobiliai/volkswagen/golf?category_id=2&slist=2628362265"
 user=("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                        "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -70,12 +70,25 @@ if __name__ == "__main__":
             parameter_names=parameter_block.find_all("div", {"class": "parameter-label"})
             parameter_values=parameter_block.find_all("div", {"class": "parameter-value"})
 
+            values = re.findall('[0-9]+',parameter_block.find("div", {"class": "price"}).get_text())
+            value = ''
+            if len(values)==3:
+                count=len(values)-1
+                for i in range(count):
+                    value+=str(values[i])
+            else:
+                count=len(values)
+                for i in range(count):
+                    value+=str(values[i])
+
             par=[parameter.string.strip() for parameter in parameter_names if parameter.string.strip()!='Kėbulo numeris (VIN)']
             par_values=[parameter.string.replace('\n','').strip()
                         for parameter in parameter_values if parameter.string is not None]
 
             car_object=dict(zip(par,par_values))
+
             car_object["Link"]=car
+            car_object["Kaina"]=value
 
             for key in car_dict.keys():
                 notSeen=True
