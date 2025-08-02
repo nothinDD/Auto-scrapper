@@ -42,8 +42,55 @@ def get_cars(html:str)->Tuple[List[str],str]:
 def get_info(car_html:str):
     return None
 
-def carListingPage():
-    print('jogn')
+def StoreCarInfo(car_object:Dict):
+    for key in car_dict.keys():
+        notSeen = True
+        for keyT in car_object.keys():
+            if key == keyT:
+                notSeen = False
+                car_dict[key].append(car_object[key])
+        if notSeen:
+            car_dict[key].append(None)
+    print("Stored all of the new cars.")
+
+def carListingPage(html:str)->Dict:
+    soup = BeautifulSoup(html, 'html.parser')
+
+    try:
+        parameter_block = soup.find("div", {"class": "row announcement-section"})
+    except:
+        print("No more cars to search!")
+        print(soup.prettify())
+        break
+    try:
+        parameter_names = parameter_block.find_all("div", {"class": "parameter-label"})
+        parameter_values = parameter_block.find_all("div", {"class": "parameter-value"})
+    except:
+        print("Labels not found!")
+        print(soup.prettify())
+        break
+    values = re.findall('[0-9]+', parameter_block.find("div", {"class": "price"}).get_text())
+    value = ''
+    if len(values) == 3:
+        count = len(values) - 1
+        for i in range(count):
+            value += str(values[i])
+    else:
+        count = len(values)
+        for i in range(count):
+            value += str(values[i])
+
+    par = [parameter.string.strip() for parameter in parameter_names if
+           parameter.string.strip() != 'Kėbulo numeris (VIN)']
+    par_values = [parameter.string.replace('\n', '').strip()
+                  for parameter in parameter_values if parameter.string is not None]
+
+    car_object = dict(zip(par, par_values))
+
+    car_object["Link"] = car
+    car_object["Kaina"] = value + ' €'
+
+    return car_object
 
 if __name__ == "__main__":
     with sync_playwright() as p:
@@ -55,68 +102,31 @@ if __name__ == "__main__":
             bypass_csp=True,
         )
         page = context.new_page()
+
+        #Goes to the provided link expecting a list full of cars
         page.goto(url)
         html = page.content()
-
         page_count=1
         car_count=0
 
         soup = BeautifulSoup(html, 'html.parser')
-        auto_count=re.sub('[()]','',soup.find("span", {"class":"result-count"}).get_text().strip())
+
+        auto_count=re.sub('[()]','',soup.find("span",
+                                              {"class":"result-count"}).get_text().strip())
         print(f"Cars to parse: {auto_count}")
 
         car_lists,next_page=get_cars(html)
 
         while next_page is not None and len(car_lists)!=0:
+
             print(f"\nCurrrent page: {page_count}\n")
+
             for car in tqdm(car_lists):
                 page.goto(car)
-
                 html=page.content()
-                soup = BeautifulSoup(html, 'html.parser')
+                car_object=carListingPage(html)
 
-                try:
-                    parameter_block=soup.find("div", {"class": "row announcement-section"})
-                except:
-                    print("No more cars to search!")
-                    print(soup.prettify())
-                    break
-                try:
-                    parameter_names=parameter_block.find_all("div", {"class": "parameter-label"})
-                    parameter_values=parameter_block.find_all("div", {"class": "parameter-value"})
-                except:
-                    print("Labels not found!")
-                    print(soup.prettify())
-                    break
-                values = re.findall('[0-9]+',parameter_block.find("div", {"class": "price"}).get_text())
-                value = ''
-                if len(values)==3:
-                    count=len(values)-1
-                    for i in range(count):
-                        value+=str(values[i])
-                else:
-                    count=len(values)
-                    for i in range(count):
-                        value+=str(values[i])
-
-                par=[parameter.string.strip() for parameter in parameter_names if parameter.string.strip()!='Kėbulo numeris (VIN)']
-                par_values=[parameter.string.replace('\n','').strip()
-                            for parameter in parameter_values if parameter.string is not None]
-
-                car_object=dict(zip(par,par_values))
-
-                car_object["Link"]=car
-                car_object["Kaina"]=value+' €'
-
-                for key in car_dict.keys():
-                    notSeen=True
-                    for keyT in car_object.keys():
-                        if key==keyT:
-                            notSeen=False
-                            car_dict[key].append(car_object[key])
-                    if notSeen:
-                        car_dict[key].append(None)
-
+            StoreCarInfo(car_object)
             car_count += len(car_lists)
             page.goto(next_page)
 
