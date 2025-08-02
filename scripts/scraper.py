@@ -33,15 +33,17 @@ def get_cars(html:str)->Tuple[List[str],str]:
     shop_div=soup.find("div", {"class" : "auto-lists lt"})
     car_list_part=shop_div.find_all("a", {"class" : "announcement-item is-enhanced is-gallery"})
     car_links=[link.get("href") for link in car_list_part]
-
-    next_page=url+soup.find("a", {"class" : "next"}).get("href")
+    try:
+        next_page=url+soup.find("a", {"class" : "next"}).get("href")
+    except:
+        next_page=None
 
     return car_links,next_page
 def get_info(car_html:str):
     return None
 
 def carListingPage():
-
+    print('jogn')
 
 if __name__ == "__main__":
     with sync_playwright() as p:
@@ -65,7 +67,7 @@ if __name__ == "__main__":
 
         car_lists,next_page=get_cars(html)
 
-        while next_page is not None:
+        while next_page is not None and len(car_lists)!=0:
             print(f"\nCurrrent page: {page_count}\n")
             for car in tqdm(car_lists):
                 page.goto(car)
@@ -78,10 +80,14 @@ if __name__ == "__main__":
                 except:
                     print("No more cars to search!")
                     print(soup.prettify())
-
-                parameter_names=parameter_block.find_all("div", {"class": "parameter-label"})
-                parameter_values=parameter_block.find_all("div", {"class": "parameter-value"})
-
+                    break
+                try:
+                    parameter_names=parameter_block.find_all("div", {"class": "parameter-label"})
+                    parameter_values=parameter_block.find_all("div", {"class": "parameter-value"})
+                except:
+                    print("Labels not found!")
+                    print(soup.prettify())
+                    break
                 values = re.findall('[0-9]+',parameter_block.find("div", {"class": "price"}).get_text())
                 value = ''
                 if len(values)==3:
