@@ -4,6 +4,7 @@ from playwright.sync_api import sync_playwright
 from typing import Tuple, Dict, List
 import pandas as pd
 import re
+from tqdm import tqdm
 url="https://autoplius.lt/skelbimai/naudoti-automobiliai/volkswagen/golf?category_id=2&slist=2628362265"
 user=("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                        "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -39,6 +40,8 @@ def get_cars(html:str)->Tuple[List[str],str]:
 def get_info(car_html:str):
     return None
 
+def carListingPage():
+
 
 if __name__ == "__main__":
     with sync_playwright() as p:
@@ -57,21 +60,25 @@ if __name__ == "__main__":
         car_count=0
 
         soup = BeautifulSoup(html, 'html.parser')
-        auto_count=re.sub('[()]','',soup.find("span", {"class":"result-count"}).get_text())
-        print(auto_count)
+        auto_count=re.sub('[()]','',soup.find("span", {"class":"result-count"}).get_text().strip())
+        print(f"Cars to parse: {auto_count}")
+
         car_lists,next_page=get_cars(html)
 
         while next_page is not None:
             print(f"\nCurrrent page: {page_count}\n")
-            for car in car_lists:
+            for car in tqdm(car_lists):
                 page.goto(car)
 
                 html=page.content()
                 soup = BeautifulSoup(html, 'html.parser')
+
                 try:
                     parameter_block=soup.find("div", {"class": "row announcement-section"})
-                except FileNotFoundError:
+                except:
                     print("No more cars to search!")
+                    print(soup.prettify())
+
                 parameter_names=parameter_block.find_all("div", {"class": "parameter-label"})
                 parameter_values=parameter_block.find_all("div", {"class": "parameter-value"})
 
@@ -108,7 +115,7 @@ if __name__ == "__main__":
             page.goto(next_page)
 
 
-            print(f"\nCurrent scrapped car count:{car_count}\n")
+            print(f"\nCurrent scrapped car count:{car_count} / {auto_count}\n")
             page_count += 1
             html=page.content()
             car_lists, next_page = get_cars(html)
