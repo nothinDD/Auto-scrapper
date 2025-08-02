@@ -37,8 +37,10 @@ def get_cars(html:str)->Tuple[List[str],str]:
         next_page=url+soup.find("a", {"class" : "next"}).get("href")
     except:
         next_page=None
+        print("No more pages left.")
 
     return car_links,next_page
+
 def get_info(car_html:str):
     return None
 
@@ -119,7 +121,7 @@ if __name__ == "__main__":
 
         while next_page is not None and len(car_lists)!=0:
 
-            print(f"\nCurrrent page: {page_count}\n")
+            print(f"\nCurrrent page: {page_count}\n | Next page: {next_page}")
 
             for car in tqdm(car_lists):
                 page.goto(car)
@@ -134,6 +136,7 @@ if __name__ == "__main__":
             print(f"\nCurrent scrapped car count:{car_count} / {auto_count}\n")
             page_count += 1
             html=page.content()
+
             car_lists, next_page = get_cars(html)
 
         browser.close()
