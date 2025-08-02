@@ -26,7 +26,8 @@ It was created to practice and demonstrate the following:
 - Python 3
 - `requests`
 - `BeautifulSoup`
-- (optional) `pandas` for data handling
+- `pandas` for data handling
+- `tqdm`
 
 ## 📁 Project Structure
 
@@ -36,7 +37,9 @@ Auto-scrapper/
 │ └── scrapr.py
 ├── requirements.txt
 └── README.md
-
+## How to Use
+1. Download the required packages.
+2. Paste an Autoplius link (containing the list of cars) in the link section.
 ## 🚫 Disclaimer
 
 This tool is **not meant for production use** or to violate the website's terms of service.
@@ -44,4 +47,4 @@ This tool is **not meant for production use** or to violate the website's terms 
 > Please respect robots.txt and Auto Plius' data policies.
 
 ---
-##🚨 Work is still in progress 🚨
+## 🚨 Work is still in progress 🚨
