@@ -57,55 +57,58 @@ if __name__ == "__main__":
         car_count=0
 
         #while page is not None:
-        page_count+=1
+
         car_lists,next_page=get_cars(html)
-        for car in car_lists:
-            page.goto(car)
+        while next_page is not None:
+            for car in car_lists:
+                page.goto(car)
+                print(f"\nCurrrenty page: {page_count}\n")
+                html=page.content()
+                soup = BeautifulSoup(html, 'html.parser')
 
+                parameter_block=soup.find("div", {"class": "row announcement-section"})
+
+                parameter_names=parameter_block.find_all("div", {"class": "parameter-label"})
+                parameter_values=parameter_block.find_all("div", {"class": "parameter-value"})
+
+                values = re.findall('[0-9]+',parameter_block.find("div", {"class": "price"}).get_text())
+                value = ''
+                if len(values)==3:
+                    count=len(values)-1
+                    for i in range(count):
+                        value+=str(values[i])
+                else:
+                    count=len(values)
+                    for i in range(count):
+                        value+=str(values[i])
+
+                par=[parameter.string.strip() for parameter in parameter_names if parameter.string.strip()!='Kėbulo numeris (VIN)']
+                par_values=[parameter.string.replace('\n','').strip()
+                            for parameter in parameter_values if parameter.string is not None]
+
+                car_object=dict(zip(par,par_values))
+
+                car_object["Link"]=car
+                car_object["Kaina"]=value
+
+                for key in car_dict.keys():
+                    notSeen=True
+                    for keyT in car_object.keys():
+                        if key==keyT:
+                            notSeen=False
+                            car_dict[key].append(car_object[key])
+                    if notSeen:
+                        car_dict[key].append(None)
+
+            car_count += len(car_lists)
+            page.goto(next_page)
+
+
+            print(f"\nCurrent scrapped car count:{car_count}\n")
+            page_count += 1
             html=page.content()
-            soup = BeautifulSoup(html, 'html.parser')
+            car_lists, next_page = get_cars(html)
 
-            parameter_block=soup.find("div", {"class": "row announcement-section"})
-
-            parameter_names=parameter_block.find_all("div", {"class": "parameter-label"})
-            parameter_values=parameter_block.find_all("div", {"class": "parameter-value"})
-
-            values = re.findall('[0-9]+',parameter_block.find("div", {"class": "price"}).get_text())
-            value = ''
-            if len(values)==3:
-                count=len(values)-1
-                for i in range(count):
-                    value+=str(values[i])
-            else:
-                count=len(values)
-                for i in range(count):
-                    value+=str(values[i])
-
-            par=[parameter.string.strip() for parameter in parameter_names if parameter.string.strip()!='Kėbulo numeris (VIN)']
-            par_values=[parameter.string.replace('\n','').strip()
-                        for parameter in parameter_values if parameter.string is not None]
-
-            car_object=dict(zip(par,par_values))
-
-            car_object["Link"]=car
-            car_object["Kaina"]=value
-
-            for key in car_dict.keys():
-                notSeen=True
-                for keyT in car_object.keys():
-                    if key==keyT:
-                        notSeen=False
-                        car_dict[key].append(car_object[key])
-                if notSeen:
-                    car_dict[key].append(None)
-
-        car_count += len(car_lists)
-        #page.goto(next_page)
-
-        print(f"\nGoing to next page: {page_count}\n")
-        print(f"\nCurrent scrapped car count:{car_count}\n")
-
-        #html=page.content()
         browser.close()
 
     dt=pd.DataFrame(data=car_dict)
