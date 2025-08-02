@@ -138,7 +138,7 @@ if __name__ == "__main__":
             page.goto(next_page)
 
 
-            print(f"\nCurrent scrapped car count:{car_count} / {auto_count}\n")
+            print(f"\nCurrent scrapped car count: {car_count} / {auto_count}\n")
             page_count += 1
             html=page.content()
 
