@@ -56,18 +56,22 @@ if __name__ == "__main__":
         page_count=1
         car_count=0
 
-        #while page is not None:
-
+        soup = BeautifulSoup(html, 'html.parser')
+        auto_count=re.sub('[()]','',soup.find("span", {"class":"result-count"}).get_text())
+        print(auto_count)
         car_lists,next_page=get_cars(html)
+
         while next_page is not None:
+            print(f"\nCurrrent page: {page_count}\n")
             for car in car_lists:
                 page.goto(car)
-                print(f"\nCurrrenty page: {page_count}\n")
+
                 html=page.content()
                 soup = BeautifulSoup(html, 'html.parser')
-
-                parameter_block=soup.find("div", {"class": "row announcement-section"})
-
+                try:
+                    parameter_block=soup.find("div", {"class": "row announcement-section"})
+                except FileNotFoundError:
+                    print("No more cars to search!")
                 parameter_names=parameter_block.find_all("div", {"class": "parameter-label"})
                 parameter_values=parameter_block.find_all("div", {"class": "parameter-value"})
 
@@ -89,7 +93,7 @@ if __name__ == "__main__":
                 car_object=dict(zip(par,par_values))
 
                 car_object["Link"]=car
-                car_object["Kaina"]=value
+                car_object["Kaina"]=value+' €'
 
                 for key in car_dict.keys():
                     notSeen=True
