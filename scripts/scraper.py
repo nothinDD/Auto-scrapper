@@ -5,6 +5,7 @@ from typing import Tuple, Dict, List
 import pandas as pd
 import re
 from tqdm import tqdm
+import time
 url="https://autoplius.lt/skelbimai/naudoti-automobiliai?make_id=43&model_id=193"
 user=("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                        "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -41,9 +42,6 @@ def get_cars(html:str)->Tuple[List[str],str]:
         print("No more pages left.")
 
     return car_links,next_page
-
-def get_info(car_html:str):
-    return None
 
 def StoreCarInfo(car_object:Dict):
     for key in car_dict.keys():
@@ -106,7 +104,7 @@ if __name__ == "__main__":
         )
         page = context.new_page()
 
-        #Goes to the provided link expecting a list full of cars
+        #goes to the provided link expecting a list full of cars
         page.goto(url)
         html = page.content()
         page_count=1
@@ -140,8 +138,8 @@ if __name__ == "__main__":
 
             print(f"\nCurrent scrapped car count: {car_count} / {auto_count}\n")
             page_count += 1
-            html=page.content()
 
+            html=page.content()
             car_lists, next_page = get_cars(html)
 
         browser.close()
