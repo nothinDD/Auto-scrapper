@@ -5,7 +5,7 @@ from typing import Tuple, Dict, List
 import pandas as pd
 import re
 from tqdm import tqdm
-url="https://autoplius.lt/skelbimai/naudoti-automobiliai/volkswagen/golf?category_id=2&slist=2628362265"
+url="https://autoplius.lt/skelbimai/naudoti-automobiliai?make_id=43&model_id=193"
 user=("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                        "AppleWebKit/537.36 (KHTML, like Gecko) "
                        "Chrome/114.0.0.0 Safari/537.36")
