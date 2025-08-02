@@ -63,14 +63,14 @@ def carListingPage(html:str)->Dict:
     except:
         print("No more cars to search!")
         print(soup.prettify())
-        break
+        return None
     try:
         parameter_names = parameter_block.find_all("div", {"class": "parameter-label"})
         parameter_values = parameter_block.find_all("div", {"class": "parameter-value"})
     except:
         print("Labels not found!")
         print(soup.prettify())
-        break
+        return None
     values = re.findall('[0-9]+', parameter_block.find("div", {"class": "price"}).get_text())
     value = ''
     if len(values) == 3:
@@ -128,7 +128,11 @@ if __name__ == "__main__":
                 html=page.content()
                 car_object=carListingPage(html)
 
-            StoreCarInfo(car_object)
+            if car_object is not None:
+                StoreCarInfo(car_object)
+            else:
+                break
+
             car_count += len(car_lists)
             page.goto(next_page)
 
