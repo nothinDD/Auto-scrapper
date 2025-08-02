@@ -134,7 +134,7 @@ if __name__ == "__main__":
 
             car_count += len(car_lists)
             page.goto(next_page)
-
+            time.sleep(1)
 
             print(f"\nCurrent scrapped car count: {car_count} / {auto_count}\n")
             page_count += 1
