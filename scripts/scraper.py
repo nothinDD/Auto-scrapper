@@ -133,12 +133,10 @@ if __name__ == "__main__":
                 html=page.content()
                 car_object=carListingPage(html)
 
-            if car_object is not None:
-                print(f"Cars collected into an object: {len(car_object.keys())}")
-                StoreCarInfo(car_object)
-                print(car_dict)
-            else:
-                break
+                if car_object is not None:
+                    StoreCarInfo(car_object)
+                else:
+                    break
 
             car_count += len(car_lists)
             page.goto(next_page)
