@@ -33,7 +33,13 @@ def get_cars(html:str)->Tuple[List[str],str]:
     soup=BeautifulSoup(html, 'html.parser')
 
     shop_div=soup.find("div", {"class" : "auto-lists lt"})
-    car_list_part=shop_div.find_all("a", {"class" : "announcement-item is-enhanced is-gallery"})
+
+    try:
+        car_list_part=shop_div.find_all("a", {"class" : "announcement-item is-enhanced is-gallery"})
+    except:
+        print("Captcha required")
+        return None
+
     car_links=[link.get("href") for link in car_list_part]
     try:
         next_page=url+soup.find("a", {"class" : "next"}).get("href")
@@ -95,7 +101,7 @@ def carListingPage(html:str)->Dict:
 
 if __name__ == "__main__":
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(headless=False)
         context = browser.new_context(
             user_agent=user,
             locale="en-US",
@@ -134,7 +140,7 @@ if __name__ == "__main__":
 
             car_count += len(car_lists)
             page.goto(next_page)
-            time.sleep(1)
+            time.sleep(2)
 
             print(f"\nCurrent scrapped car count: {car_count} / {auto_count}\n")
             page_count += 1
