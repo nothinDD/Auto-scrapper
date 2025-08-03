@@ -6,7 +6,7 @@ import pandas as pd
 import re
 from tqdm import tqdm
 import time
-url="https://autoplius.lt/skelbimai/naudoti-automobiliai?make_id=43&model_id=193&page_nr=15"
+url="https://autoplius.lt/skelbimai/naudoti-automobiliai?make_id=43&model_id=193&page_nr=1"
 user=("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                        "AppleWebKit/537.36 (KHTML, like Gecko) "
                        "Chrome/114.0.0.0 Safari/537.36")
