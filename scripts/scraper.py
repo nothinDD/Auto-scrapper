@@ -101,7 +101,7 @@ def carListingPage(html:str)->Dict:
 
 if __name__ == "__main__":
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
         context = browser.new_context(
             user_agent=user,
             locale="en-US",
@@ -134,13 +134,30 @@ if __name__ == "__main__":
                 car_object=carListingPage(html)
 
             if car_object is not None:
+                print(car_object)
                 StoreCarInfo(car_object)
             else:
                 break
 
             car_count += len(car_lists)
             page.goto(next_page)
-            time.sleep(2)
+
+            #javascript rendering for cars to load
+            # cuz on page 20+ the cars stop rendering on instance
+            _prev_height = -1
+            _max_scrolls = 100
+            _scroll_count = 0
+            while _scroll_count < _max_scrolls:
+                page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+                page.wait_for_timeout(1000)
+                new_height = page.evaluate("document.body.scrollHeight")
+                if new_height == _prev_height:
+                    break
+                _prev_height = new_height
+                _scroll_count += 1
+
+
+
 
             print(f"\nCurrent scrapped car count: {car_count} / {auto_count}\n")
             page_count += 1
