@@ -134,7 +134,9 @@ if __name__ == "__main__":
                 car_object=carListingPage(html)
 
             if car_object is not None:
+                print(car_object)
                 StoreCarInfo(car_object)
+                print(car_dict)
             else:
                 break
 
@@ -155,6 +157,9 @@ if __name__ == "__main__":
                     break
                 _prev_height = new_height
                 _scroll_count += 1
+            ##Scrolling done
+
+
 
             print(f"\nCurrent scrapped car count: {car_count} / {auto_count}\n")
             page_count += 1
@@ -164,5 +169,6 @@ if __name__ == "__main__":
 
         browser.close()
 
+    print(f"Printing the stored cars.")
     dt=pd.DataFrame(data=car_dict)
     dt.to_csv(file, mode='w')
