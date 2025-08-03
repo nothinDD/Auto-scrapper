@@ -134,7 +134,7 @@ if __name__ == "__main__":
                 car_object=carListingPage(html)
 
             if car_object is not None:
-                print(car_object)
+                print(f"Cars collected into an object: {len(car_object.keys())}")
                 StoreCarInfo(car_object)
                 print(car_dict)
             else:
