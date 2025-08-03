@@ -140,7 +140,21 @@ if __name__ == "__main__":
 
             car_count += len(car_lists)
             page.goto(next_page)
-            time.sleep(2)
+
+            #Scrolling, because you need javascript scrolling to render new cars
+            #This is meant for 20+ pages, because the cars stop rendering
+            #Await functions don't work, that means the javascript is the problem
+            _prev_height = -1
+            _max_scrolls = 100
+            _scroll_count = 0
+            while _scroll_count < _max_scrolls:
+                page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+                page.wait_for_timeout(1000)
+                new_height = page.evaluate("document.body.scrollHeight")
+                if new_height == _prev_height:
+                    break
+                _prev_height = new_height
+                _scroll_count += 1
 
             print(f"\nCurrent scrapped car count: {car_count} / {auto_count}\n")
             page_count += 1
