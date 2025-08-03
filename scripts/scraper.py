@@ -42,7 +42,7 @@ def get_cars(html:str)->Tuple[List[str],str]:
 
     car_links=[link.get("href") for link in car_list_part]
     try:
-        next_page=url+soup.find("a", {"class" : "next"}).get("href")
+        next_page="https://autoplius.lt"+soup.find("a", {"class" : "next"}).get("href")
     except:
         next_page=None
         print("No more pages left.")
