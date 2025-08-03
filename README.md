@@ -39,7 +39,10 @@ Auto-scrapper/
 └── README.md
 ## How to Use
 1. Download the required packages.
-2. Paste an Autoplius link (containing the list of cars) in the link section.
+2. In scraper.py:
+  1. Paste an Autoplius link (containing the list of cars) in the link section.
+  2. Run the script.
+     
 ## 🚫 Disclaimer
 
 This tool is **not meant for production use** or to violate the website's terms of service.

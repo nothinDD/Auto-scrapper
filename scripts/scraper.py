@@ -33,13 +33,7 @@ def get_cars(html:str)->Tuple[List[str],str]:
     soup=BeautifulSoup(html, 'html.parser')
 
     shop_div=soup.find("div", {"class" : "auto-lists lt"})
-
-    try:
-        car_list_part=shop_div.find_all("a", {"class" : "announcement-item is-enhanced is-gallery"})
-    except:
-        print("Captcha required")
-        return None
-
+    car_list_part=shop_div.find_all("a", {"class" : "announcement-item is-enhanced is-gallery"})
     car_links=[link.get("href") for link in car_list_part]
     try:
         next_page=url+soup.find("a", {"class" : "next"}).get("href")
@@ -134,30 +128,13 @@ if __name__ == "__main__":
                 car_object=carListingPage(html)
 
             if car_object is not None:
-                print(car_object)
                 StoreCarInfo(car_object)
             else:
                 break
 
             car_count += len(car_lists)
             page.goto(next_page)
-
-            #javascript rendering for cars to load
-            # cuz on page 20+ the cars stop rendering on instance
-            _prev_height = -1
-            _max_scrolls = 100
-            _scroll_count = 0
-            while _scroll_count < _max_scrolls:
-                page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-                page.wait_for_timeout(1000)
-                new_height = page.evaluate("document.body.scrollHeight")
-                if new_height == _prev_height:
-                    break
-                _prev_height = new_height
-                _scroll_count += 1
-
-
-
+            time.sleep(1)
 
             print(f"\nCurrent scrapped car count: {car_count} / {auto_count}\n")
             page_count += 1
