@@ -6,7 +6,7 @@ import pandas as pd
 import re
 from tqdm import tqdm
 import time
-url="https://autoplius.lt/skelbimai/naudoti-automobiliai?make_id=43&model_id=193"
+url="https://autoplius.lt/skelbimai/naudoti-automobiliai?make_id=43&model_id=193&page_nr=15"
 user=("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                        "AppleWebKit/537.36 (KHTML, like Gecko) "
                        "Chrome/114.0.0.0 Safari/537.36")
@@ -58,7 +58,6 @@ def StoreCarInfo(car_object:Dict):
                 car_dict[key].append(car_object[key])
         if notSeen:
             car_dict[key].append(None)
-    print("Stored all of the new cars.")
 
 def carListingPage(html:str)->Dict:
     soup = BeautifulSoup(html, 'html.parser')
@@ -137,6 +136,8 @@ if __name__ == "__main__":
                     StoreCarInfo(car_object)
                 else:
                     break
+
+            print("Stored all of the new cars.")
 
             car_count += len(car_lists)
             page.goto(next_page)
