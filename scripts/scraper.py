@@ -1,3 +1,4 @@
+import playwright.sync_api
 import requests
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
@@ -98,6 +99,19 @@ def carListingPage(html:str)->Dict:
 
     return car_object
 
+def ScrollToBottom(page)->None:
+    _prev_height = -1
+    _max_scrolls = 100
+    _scroll_count = 0
+    while _scroll_count < _max_scrolls:
+        page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+        page.wait_for_timeout(1000)
+        new_height = page.evaluate("document.body.scrollHeight")
+        if new_height == _prev_height:
+            break
+        _prev_height = new_height
+        _scroll_count += 1
+
 if __name__ == "__main__":
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -145,17 +159,7 @@ if __name__ == "__main__":
             #Scrolling, because you need javascript scrolling to render new cars
             #This is meant for 20+ pages, because the cars stop rendering
             #Await functions don't work, that means the javascript is the problem
-            _prev_height = -1
-            _max_scrolls = 100
-            _scroll_count = 0
-            while _scroll_count < _max_scrolls:
-                page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-                page.wait_for_timeout(1000)
-                new_height = page.evaluate("document.body.scrollHeight")
-                if new_height == _prev_height:
-                    break
-                _prev_height = new_height
-                _scroll_count += 1
+            ScrollToBottom(page)
             ##Scrolling done
 
 
